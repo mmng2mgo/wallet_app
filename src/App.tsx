@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Form } from './Form';
 import "../static/styles.css";
  
 export const App: React.FC = () => {
@@ -15,6 +16,7 @@ export const App: React.FC = () => {
         <div className="App">
             <h1>Hello frm React!</h1>
             <p>Server Response: {data} </p>
+            <Form />
         </div>
     );
 };
