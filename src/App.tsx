@@ -21,24 +21,22 @@ export const App  = () => {
         handleSubmit 
     } = useForm<DataType>();
 
-    const addData = async (event: DataType) => {
-        const { categoryname } = event;
-        console.log(categoryname);
+//post処理
+    const addData = async (data: DataType) => {
         try{
-            const response = await fetch("http://localhost:3001", {
+            const response = await fetch("http://localhost:3001/add", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ data: { categoryname } }),
+                body: JSON.stringify(data),
             });
-            const data = await response.json();
-            console.log(data);
         } catch(error) {
             console.log(error);
         }
     };
 
+//get処理
     useEffect(() => {
         fetch('http://localhost:3001')
         .then((response) => response.json())
@@ -46,7 +44,7 @@ export const App  = () => {
             setDatas(data);
         })
         .catch((error) => console.error('Error:', error));
-    }, []);
+    }, [datas]);
 
     return (
         <div className="App">
@@ -55,6 +53,18 @@ export const App  = () => {
                 <input type="text" {...register("categoryname")}/>
                 <button type="submit">add</button>
             </form>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>収入カテゴリー</th>
+                    </tr>
+                        {datas.map((data) => (
+                            <tr key={data.id}>
+                                <td>{data.categoryname}</td>
+                            </tr>
+                        ))}
+                </tbody>
+            </table>
             <Form />
         </div>
     );
