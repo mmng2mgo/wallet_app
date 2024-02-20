@@ -3,6 +3,7 @@ import axios from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Form } from './Form';
 import { Category } from './Category';
+import { Edit } from './Edit';
 import "../static/styles.css";
  
 type DataTypes = {
@@ -12,10 +13,15 @@ type DataTypes = {
 
 type DataType = {
  categoryname: string;
+ editCategoryName: string;
 };
 
 export const App  = () => {
     const [datas, setDatas] = useState<DataTypes[]>([]);
+    const [isEdit, setIsEdit] = useState({id: "", categoryname: ""});
+    //edit画面の表示
+    const [show, setShow] = useState(false);
+    const [showStates, setShowStates] = useState<boolean[]>([]);
     const { 
         register, 
         handleSubmit 
@@ -56,6 +62,28 @@ export const App  = () => {
             console.log(error);
         }
     };
+//update画面を表示するボタン
+    const handleEditButton = (index: number) => {
+        //スプレッド構文で配列をコピー
+        const newShowStates = [...showStates];
+        newShowStates[index] = !newShowStates[index];
+        setShowStates(newShowStates);
+        setShow(true);
+    };
+//update処理
+    const updateData = async (data: DataType) => {
+        try{
+            const response = await fetch("http://localhost:3001/put", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+        } catch(error) {
+            console.log(error);
+        }
+    }
 //get処理
     useEffect(() => {
         fetch('http://localhost:3001')
@@ -81,9 +109,13 @@ export const App  = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {datas.map((data) => (
+                    {datas.map((data, index) => (
                         <tr key={data.id}>
                             <td>{data.categoryname}</td>
+                            <td>
+                                <button onClick={() => handleEditButton(index)}>edit</button>
+                                {show && showStates[index] && <Edit editData={data} show={show} setShow={setShow}/>}
+                            </td>
                             <td>
                                 <button onClick={() => deleteData(data.id)}>delete</button>
                             </td>
