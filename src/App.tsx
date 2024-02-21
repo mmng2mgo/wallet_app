@@ -69,21 +69,7 @@ export const App  = () => {
         newShowStates[index] = !newShowStates[index];
         setShowStates(newShowStates);
         setShow(true);
-    };
-//update処理
-    const updateData = async (data: DataType) => {
-        try{
-            const response = await fetch("http://localhost:3001/put", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-        } catch(error) {
-            console.log(error);
-        }
-    }
+    };    
 //get処理
     useEffect(() => {
         fetch('http://localhost:3001')
@@ -97,15 +83,19 @@ export const App  = () => {
     return (
         <div className="App">
             <h1>Wallet App</h1>
-            <form onSubmit={handleSubmit(addData)}>
-                <input type="text" {...register("categoryname")}/>
-                <button type="submit">add</button>
-            </form>
+            <div>
+                <h3>新規登録</h3>
+                <form onSubmit={handleSubmit(addData)}>
+                    <input type="text" {...register("categoryname")}/>
+                    <button type="submit">add</button>
+                </form>
+            </div>
             <table>
                 <thead>
                     <tr>
                         <th>収入カテゴリー</th>
-                        <th>delete</th>
+                        <th>編集</th>
+                        <th>削除</th>
                     </tr>
                 </thead>
                 <tbody>
