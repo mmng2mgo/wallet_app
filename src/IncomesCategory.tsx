@@ -4,31 +4,22 @@ import { Form } from './Form';
 import { Category } from './Category';
 import { Edit } from './Edit';
 import "../static/styles.css";
-
-type DataTypes = {
-    id: string;
-    categoryname: string;
-};
-   
-type DataType = {
-categoryname: string;
-editCategoryName: string;
-};
+import { MoneyDataTypes, MoneyDataType } from './MoneyData';
 
 export const DatasContext = createContext(null);
 
 export function IncomesCategory(){
 
-    const [datas, setDatas] = useState<DataTypes[]>([]);
+    const [datas, setDatas] = useState<MoneyDataTypes[]>([]);
     //edit画面の表示
     const [show, setShow] = useState(false);
     const [showStates, setShowStates] = useState<boolean[]>([]);
     const { 
         register, 
         handleSubmit 
-    } = useForm<DataType>();
+    } = useForm<MoneyDataType>();
     //post処理
-    const addData = async (data: DataType) => {
+    const addData = async (data: MoneyDataType) => {
         try{
             const response = await fetch("http://localhost:3001/add", {
                 method: "POST",
@@ -74,7 +65,7 @@ export function IncomesCategory(){
     useEffect(() => {
         fetch('http://localhost:3001')
         .then((response) => response.json())
-        .then((data: DataTypes[]) => {
+        .then((data: MoneyDataTypes[]) => {
             setDatas(data);
         })
         .catch((error) => console.error('Error:', error));
