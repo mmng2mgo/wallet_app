@@ -5,12 +5,13 @@ import { Category } from './Category';
 import { Edit } from './Edit';
 import "../static/styles.css";
 import { MoneyDataTypes, MoneyDataType } from './MoneyData';
+import { useGetDbData } from '../hooks/useGetDbData';
 
 export const DatasContext = createContext(null);
 
 export function IncomesCategory(){
 
-    const [datas, setDatas] = useState<MoneyDataTypes[]>([]);
+    const [incomesCategories, setIncomesCategories] = useState<MoneyDataTypes[]>([]);
     //edit画面の表示
     const [show, setShow] = useState(false);
     const [showStates, setShowStates] = useState<boolean[]>([]);
@@ -36,7 +37,7 @@ export function IncomesCategory(){
     const deleteData = async (id: string) => {
         try{
             console.log(id);
-            console.log(datas.filter((data) => data.id === id));
+            console.log(incomesCategories.filter((incomesCategory) => incomesCategory.id === id));
             const response = await fetch(`http://localhost:3001/delete/${id}`, {
                 method: "DELETE",
                 headers: {
@@ -46,8 +47,8 @@ export function IncomesCategory(){
             if(!response.ok){
                 throw new Error("Failed to delete data");
             }
-            const newData = datas.filter((data) => data.id !== id);
-            setDatas(newData)
+            const newData = incomesCategories.filter((incomesCategory) => incomesCategory.id !== id);
+            setIncomesCategories(newData)
             console.log(newData);
         } catch(error) {
             console.log(error);
@@ -61,16 +62,8 @@ export function IncomesCategory(){
         setShowStates(newShowStates);
         setShow(true);
     };    
-//get処理
-    useEffect(() => {
-        fetch('http://localhost:3001')
-        .then((response) => response.json())
-        .then((data: MoneyDataTypes[]) => {
-            setDatas(data);
-        })
-        .catch((error) => console.error('Error:', error));
-    }, [datas]);
-
+    //get処理
+    const [dataList] = useGetDbData<MoneyDataTypes>({url:'http://localhost:3001', datas: incomesCategories, setDatas:　setIncomesCategories});
     return (
         <div className="IncomesCategory">
             <h1>Wallet App</h1>
@@ -90,7 +83,7 @@ export function IncomesCategory(){
                     </tr>
                 </thead>
                 <tbody>
-                    {datas.map((data, index) => (
+                    {dataList.map((data, index) => (
                         <tr key={data.id}>
                             <td>{data.categoryname}</td>
                             <td>
