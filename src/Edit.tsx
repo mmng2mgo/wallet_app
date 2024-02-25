@@ -1,7 +1,7 @@
-import { SubmitHandler, useForm } from "react-hook-form";
-import React from 'react';
+import { SubmitHandler, useForm, } from "react-hook-form";
+import React, { useState } from 'react';
 import './Edit.css';
-import { MoneyDataTypes, MoneyDataType } from './MoneyData';
+import { EditMoneyDataType, MoneyDataTypes } from './MoneyData';
 
 type EditProps = {
     editData: MoneyDataTypes;
@@ -13,10 +13,10 @@ export function Edit({editData, show, setShow}: EditProps){
 
     const { 
         register, 
-        handleSubmit 
-    } = useForm<MoneyDataType>();
+        handleSubmit,
+    } = useForm<EditMoneyDataType>({});
     //update処理
-    const updateData = async (data: MoneyDataType) => {
+    const updateData = async (data: EditMoneyDataType) => {
         try{
             const response = await fetch("http://localhost:3001/update", {
                 method: "PUT",
@@ -37,7 +37,7 @@ export function Edit({editData, show, setShow}: EditProps){
                 <div id="content">
                     <form onSubmit={handleSubmit(updateData)}>
                         <input type="hidden" {...register("id",{ value: editData.id })}/>
-                        <input type="text" {...register("editCategoryName")}/>
+                        <input type="text" {...register("editCategoryname",{value: editData.categoryname})}/>
                         <button type="submit">submit</button>
                     </form>
                     <button onClick={() => setShow(false)}>Cancel</button>
