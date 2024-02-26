@@ -1,11 +1,9 @@
 import React, {useEffect, useState, createContext} from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Form } from './Form';
-import { Category } from './Category';
 import { Edit } from './Edit';
 import "../static/styles.css";
 import { MoneyDataTypes, MoneyDataType } from './MoneyData';
 import { useGetDbData } from '../hooks/useGetDbData';
+import { usePostDbData } from '../hooks/usePostDbData';
 
 export const DatasContext = createContext(null);
 
@@ -15,25 +13,9 @@ export function IncomesCategory(){
     //edit画面の表示
     const [show, setShow] = useState(false);
     const [showStates, setShowStates] = useState<boolean[]>([]);
-    const { 
-        register, 
-        handleSubmit 
-    } = useForm<MoneyDataType>();
     //post処理
-    const addData = async (data: MoneyDataType) => {
-        try{
-            const response = await fetch("http://localhost:3001/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-        } catch(error) {
-            console.log(error);
-        }
-    };
-//delete処理
+    const { register, handleSubmit, addData } = usePostDbData<MoneyDataType>("http://localhost:3001/add");
+    //delete処理
     const deleteData = async (id: string) => {
         try{
             console.log(id);
