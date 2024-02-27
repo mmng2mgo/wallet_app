@@ -4,8 +4,7 @@ import "../static/styles.css";
 import { MoneyDataTypes, MoneyDataType } from './MoneyData';
 import { useGetDbData } from '../hooks/useGetDbData';
 import { usePostDbData } from '../hooks/usePostDbData';
-
-export const DatasContext = createContext(null);
+import { useDeleteDbData } from '../hooks/useDeleteDbData';
 
 export function IncomesCategory(){
 
@@ -16,27 +15,14 @@ export function IncomesCategory(){
     //post処理
     const { register, handleSubmit, addData } = usePostDbData<MoneyDataType>("http://localhost:3001/add");
     //delete処理
-    const deleteData = async (id: string) => {
-        try{
-            console.log(id);
-            console.log(incomesCategories.filter((incomesCategory) => incomesCategory.id === id));
-            const response = await fetch(`http://localhost:3001/delete/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if(!response.ok){
-                throw new Error("Failed to delete data");
-            }
-            const newData = incomesCategories.filter((incomesCategory) => incomesCategory.id !== id);
-            setIncomesCategories(newData)
-            console.log(newData);
-        } catch(error) {
-            console.log(error);
-        }
+    const deleteData = useDeleteDbData("http://localhost:3001/delete");
+    const handleDeleteButton = (id: string) => {
+        deleteData(id);
+        const newData = incomesCategories.filter((incomesCategory) => incomesCategory.id !== id);
+        setIncomesCategories(newData)
+        console.log(newData);
     };
-//update画面を表示するボタン
+    //update画面を表示するボタン
     const handleEditButton = (index: number) => {
         //スプレッド構文で配列をコピー
         const newShowStates = [...showStates];
@@ -46,6 +32,7 @@ export function IncomesCategory(){
     };    
     //get処理
     const [dataList] = useGetDbData<MoneyDataTypes>({url:'http://localhost:3001', datas: incomesCategories, setDatas:　setIncomesCategories});
+
     return (
         <div className="IncomesCategory">
             <h1>Wallet App</h1>
@@ -73,7 +60,7 @@ export function IncomesCategory(){
                                 {show && showStates[index] && <Edit editData={data} show={show} setShow={setShow}/>}
                             </td>
                             <td>
-                                <button onClick={() => deleteData(data.id)}>delete</button>
+                                <button onClick={() => handleDeleteButton(data.id)}>delete</button>
                             </td>
                         </tr>
                     ))}
