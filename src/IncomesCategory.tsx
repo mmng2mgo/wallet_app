@@ -1,4 +1,5 @@
 import React, {useEffect, useState, createContext} from "react";
+import { Link } from 'react-router-dom';
 import { Edit } from './Edit';
 import "../static/styles.css";
 import { MoneyDataTypes, MoneyDataType } from './MoneyData';
@@ -6,16 +7,16 @@ import { useGetDbData } from '../hooks/useGetDbData';
 import { usePostDbData } from '../hooks/usePostDbData';
 import { useDeleteDbData } from '../hooks/useDeleteDbData';
 
-export function IncomesCategory(){
+export const IncomesCategory = () => {
 
     const [incomesCategories, setIncomesCategories] = useState<MoneyDataTypes[]>([]);
     //edit画面の表示
     const [show, setShow] = useState(false);
     const [showStates, setShowStates] = useState<boolean[]>([]);
     //post処理
-    const { register, handleSubmit, addData } = usePostDbData<MoneyDataType>("http://localhost:3001/add");
+    const { register, handleSubmit, addData } = usePostDbData<MoneyDataType>("http://localhost:3001/incomes/add");
     //delete処理
-    const deleteData = useDeleteDbData("http://localhost:3001/delete");
+    const deleteData = useDeleteDbData("http://localhost:3001/incomes/delete");
     const handleDeleteButton = (id: string) => {
         deleteData(id);
         const newData = incomesCategories.filter((incomesCategory) => incomesCategory.id !== id);
@@ -31,11 +32,10 @@ export function IncomesCategory(){
         setShow(true);
     };    
     //get処理
-    const [dataList] = useGetDbData<MoneyDataTypes>({url:'http://localhost:3001', datas: incomesCategories, setDatas:　setIncomesCategories});
+    const [dataList] = useGetDbData<MoneyDataTypes>({url:'http://localhost:3001/incomes', datas: incomesCategories, setDatas:　setIncomesCategories});
 
     return (
         <div className="IncomesCategory">
-            <h1>Wallet App</h1>
             <div>
                 <h3>新規登録</h3>
                 <form onSubmit={handleSubmit(addData)}>
@@ -66,6 +66,7 @@ export function IncomesCategory(){
                     ))}
                 </tbody>
             </table>
+            <Link to="/category">back to page</Link>
         </div>
     );
 }

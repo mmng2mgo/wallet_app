@@ -1,5 +1,5 @@
-import { SubmitHandler, useForm, } from "react-hook-form";
-import React, { useState } from 'react';
+import { SubmitHandler } from "react-hook-form";
+import React from 'react';
 import './Edit.css';
 import { EditMoneyDataType, MoneyDataTypes } from './MoneyData';
 import { useEditDbData } from '../hooks/useEditDbData';
@@ -13,7 +13,7 @@ type EditProps = {
 export function Edit({editData, show, setShow}: EditProps){
 
     //update処理
-    const { register, handleSubmit, updateData } = useEditDbData<EditMoneyDataType>("http://localhost:3001/update");
+    const { register, handleSubmit, updateData } = useEditDbData<EditMoneyDataType>("http://localhost:3001/incomes/update");
     const onSubmit: SubmitHandler<EditMoneyDataType> = async (data) => {
         await updateData(data);
         setShow(false);
